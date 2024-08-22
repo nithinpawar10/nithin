@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>University Website</title>
+</head>
+<body>
+    <header>
+        <h1>University Website</h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'about' %}">About</a></li>
+                <li><a href="{% url 'courses' %}">Courses</a></li>
+                <li><a href="{% url 'student_information' %}">Student Information</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+       {% block content %}
+       
+       <!-- About Section -->
+       {% if about %}
+       <h2>About the University</h2>
+       <img src="path/to/your/image.jpg" alt="University Image">
+       <p>This is a brief about the university.</p>
+       {% endif %}
+
+       <!-- Courses Section -->
+       {% if courses %}
+       <h2>Courses</h2>
+       <ul>
+           <li><a href="#" id="ug-courses">Undergraduate</a></li>
+           <li><a href="#" id="pg-courses">Postgraduate</a></li>
+       </ul>
+
+       <div id="course-details">
+           <!-- Course details will be displayed here -->
+       </div>
+       
+       <script>
+       document.getElementById('ug-courses').onclick = function() {
+           fetch('/api/courses/ug/')
+           .then(response => response.json())
+           .then(data => {
+               document.getElementById('course-details').innerHTML = JSON.stringify(data);
+           });
+       };
+
+       document.getElementById('pg-courses').onclick = function() {
+           fetch('/api/courses/pg/')
+           .then(response => response.json())
+           .then(data => {
+               document.getElementById('course-details').innerHTML = JSON.stringify(data);
+           });
+       };
+       </script>
+       {% endif %}
+
+       <!-- Student Information Section -->
+       {% if student_information %}
+       <h2>Student Information</h2>
+
+       <button onclick="document.getElementById('student-form').style.display='block'">Add Student</button>
+       <br><br>
+
+       <form id="student-form" style="display:none;" method="POST" action="/add-student/">
+           {% csrf_token %}
+           <input type="text" name="student_id" placeholder="Student ID" required><br>
+           <input type="text" name="name" placeholder="Name" required><br>
+           <input type="email" name="email" placeholder="Email" required><br>
+           <button type="submit">Save</button>
+       </form>
+
+       <br><br>
+
+       <input type="text" id="search" placeholder="Enter Student ID">
+       <button onclick="searchStudent()">Search</button>
+
+       <div id="student-info">
+           <!-- Student info will be displayed here -->
+       </div>
+
+       <script>
+       function searchStudent() {
+           const studentId = document.getElementById('search').value;
+           fetch(`/api/student/${studentId}`)
+           .then(response => response.json())
+           .then(data => {
+               document.getElementById('student-info').innerHTML = JSON.stringify(data);
+           });
+       }
+       </script>
+       {% endif %}
+
+       {% endblock %}
+    </main>
+</body>
+</html>

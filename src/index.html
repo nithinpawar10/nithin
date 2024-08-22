@@ -1,0 +1,18 @@
+{% verbatim %}
+<html>
+<body>
+    <main>
+       <script>
+       function searchStudent() {
+           const studentId = document.getElementById('search').value;
+           fetch(`/api/student/${studentId}`)
+           .then(response => response.json())
+           .then(data => {
+               document.getElementById('student-info').innerHTML = JSON.stringify(data);
+           });
+       }
+       </script>
+    </main>
+</body>
+</html>
+{% endverbatim %}
